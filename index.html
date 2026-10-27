@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISP Franchise Management System | Quetta</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for interactive analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🌐</div>
+      <div class="brand-info">
+        <h2 id="brandFranchiseName">FastLink ISP</h2>
+        <p>Quetta Franchise Manager</p>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" data-tab="dashboard">
+        <button><span class="icon">📊</span> Dashboard</button>
+      </li>
+      <li class="nav-item" data-tab="clients">
+        <button><span class="icon">👥</span> Clients & Billing</button>
+      </li>
+      <li class="nav-item" data-tab="expenses">
+        <button><span class="icon">💸</span> Expenses (Kharcha)</button>
+      </li>
+      <li class="nav-item" data-tab="inventory">
+        <button><span class="icon">📦</span> Samaan / Inventory</button>
+      </li>
+      <li class="nav-item" data-tab="packages">
+        <button><span class="icon">⚡</span> Packages & Margins</button>
+      </li>
+      <li class="nav-item" data-tab="investors">
+        <button><span class="icon">🤝</span> Investors Hisab</button>
+      </li>
+      <li class="nav-item" data-tab="settings">
+        <button><span class="icon">⚙️</span> Backup & Settings</button>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <span>Status: Online</span>
+      <span style="color:#10b981; font-weight: bold;">● Active</span>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="page-title">
+          <h1 id="pageHeading">Franchise Overview</h1>
+          <p id="pageSubHeading">August – October 2026 Financial & Operational Status</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm" id="quickAddExpenseBtn">+ Add Expense</button>
+        <button class="btn btn-primary btn-sm" id="quickAddClientBtn">+ New Client</button>
+      </div>
+    </header>
+
+    <!-- Page Content Container -->
+    <main class="content">
+
+      <!-- ================= 1. DASHBOARD ================= -->
+      <section id="tab-dashboard" class="tab-pane active">
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Active Clients</div>
+              <div class="kpi-value" id="kpiActiveClients">14</div>
+              <div class="kpi-subtext">Total 18 registered (4 pending)</div>
+            </div>
+            <div class="kpi-icon-box icon-blue">👥</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Total Revenue (3 Mo)</div>
+              <div class="kpi-value" id="kpiTotalRevenue">PKR 65,000</div>
+              <div class="kpi-subtext">Aug (7.3k) + Sep (28.3k) + Oct (29.4k)</div>
+            </div>
+            <div class="kpi-icon-box icon-green">💰</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Gross Margin (Bachat)</div>
+              <div class="kpi-value" id="kpiGrossMargin">PKR 27,646</div>
+              <div class="kpi-subtext">42.5% Margin after Upstream Panel</div>
+            </div>
+            <div class="kpi-icon-box icon-purple">📈</div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-title">Unspent Cash in Hand</div>
+              <div class="kpi-value" id="kpiCashInHand">PKR 12.75 M</div>
+              <div class="kpi-subtext">Out of 13.0M total investment</div>
+            </div>
+            <div class="kpi-icon-box icon-amber">🏦</div>
+          </div>
+        </div>
+
+        <!-- Alert Banner for Pending Bills -->
+        <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px 18px; margin-bottom:22px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="color:#b45309;">⚠️ Pending Oct Bills Alert:</strong>
+            <span style="color:#78350f; font-size:13px; margin-left:6px;" id="pendingAlertText">4 clients have pending dues (Babrak Khan, Zulifqar Magsi, Tanseer Shah, Fareedullah).</span>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="app.showTab('clients', 'Pending')">View Pending Clients</button>
+        </div>
+
+        <!-- Monthly Trends & Provider Cards -->
+        <div class="dashboard-row">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Monthly Performance (Aug - Oct)</span>
+              <span class="badge badge-transworld">Active Cycle</span>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Month</th>
+                      <th>Active Lines</th>
+                      <th>Revenue</th>
+                      <th>Panel Cost</th>
+                      <th>Gross Margin</th>
+                      <th>Expenses</th>
+                      <th>Net Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="monthlySummaryBody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Upstream Share</span>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                  <span><strong>Transworld</strong> (10 lines)</span>
+                  <span style="color:#2563eb; font-weight:bold;">56%</span>
+                </div>
+                <div style="background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden;">
+                  <div style="background:#2563eb; width:56%; height:100%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+                  <span><strong>Ebone</strong> (8 lines)</span>
+                  <span style="color:#f59e0b; font-weight:bold;">44%</span>
+                </div>
+                <div style="background:#e2e8f0; height:8px; border-radius:4px; overflow:hidden;">
+                  <div style="background:#f59e0b; width:44%; height:100%;"></div>
+                </div>
+              </div>
+
+              <div style="background:#f8fafc; border-radius:8px; padding:12px; font-size:12px; color:#64748b; line-height:1.5;">
+                💡 <strong>Margin Tip:</strong> Transworld 10Mb generates <strong>PKR 829</strong> profit per client vs Ebone QUE-24 <strong>PKR 639</strong> at the same PKR 1,800 price.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expense Composition Card -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Setup Investment (CapEx) vs Monthly Running (OpEx)</span>
+          </div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+              <div style="background:#f5f3ff; border:1px solid #ddd6fe; padding:16px; border-radius:10px;">
+                <h4 style="color:#6b21a8; margin-bottom:8px;">🛠️ Equipment & Setup (CapEx)</h4>
+                <div style="font-size:24px; font-weight:800; color:#581c87;" id="capexTotalDisplay">PKR 244,950</div>
+                <p style="font-size:12px; color:#7e22ce; margin-top:6px;">Splicing machine (198k), Shop Security (25k), Fan & cooler (16.1k), Adapters (5.8k). This is long-term business asset, not a loss.</p>
+              </div>
+
+              <div style="background:#fff7ed; border:1px solid #fed7aa; padding:16px; border-radius:10px;">
+                <h4 style="color:#c2410c; margin-bottom:8px;">🏢 Operational Expenses (OpEx)</h4>
+                <div style="font-size:24px; font-weight:800; color:#9a3412;" id="opexTotalDisplay">PKR 171,886</div>
+                <p style="font-size:12px; color:#ea580c; margin-top:6px;">Shop rent (25k/mo), Salaries (Yasir & Rehan 45k/mo), QESCO Electricity, Staff tea and meals.</p>
+              </div>
+
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; padding:16px; border-radius:10px;">
+                <h4 style="color:#047857; margin-bottom:8px;">🎯 Break-Even Target</h4>
+                <div style="font-size:24px; font-weight:800; color:#065f46;">92 – 95 Clients</div>
+                <p style="font-size:12px; color:#059669; margin-top:6px;">At ~PKR 900 average gross margin per client, 92 clients cover all monthly rent, salaries and electricity fully.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. CLIENTS & BILLING ================= -->
+      <section id="tab-clients" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Registered Clients & Billing Status</span>
+            <button class="btn btn-primary btn-sm" id="addClientBtn">+ Add New Client</button>
+          </div>
+          <div class="card-body">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+              <input type="text" class="search-input" id="clientSearchInput" placeholder="🔍 Search by name, phone, address, ID...">
+              
+              <div style="display:flex; gap:10px; align-items:center;">
+                <select class="select-input" id="clientProviderFilter">
+                  <option value="ALL">All Providers</option>
+                  <option value="Transworld">Transworld</option>
+                  <option value="Ebone">Ebone</option>
+                </select>
+
+                <select class="select-input" id="clientStatusFilter">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Office Line">Office Line</option>
+                </select>
+
+                <button class="btn btn-outline btn-sm" id="exportClientsBtn">📥 Export CSV</button>
+              </div>
+            </div>
+
+            <!-- Client Table -->
+            <div class="table-responsive">
+              <table class="data-table" id="clientsTable">
+                <thead>
+                  <tr>
+                    <th>Client Name / ID</th>
+                    <th>Phone</th>
+                    <th>Address / Location</th>
+                    <th>Provider</th>
+                    <th>Package</th>
+                    <th>Bill (PKR)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. EXPENSES (KHARCHA) ================= -->
+      <section id="tab-expenses" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Daily & Monthly Expenses (Kharcha)</span>
+            <button class="btn btn-primary btn-sm" id="addExpenseBtn">+ Add New Expense</button>
+          </div>
+          <div class="card-body">
+            <div class="filter-bar">
+              <input type="text" class="search-input" id="expenseSearchInput" placeholder="🔍 Search description, category, paid to...">
+              <div style="display:flex; gap:10px;">
+                <select class="select-input" id="expenseTypeFilter">
+                  <option value="ALL">All Expenses</option>
+                  <option value="OpEx">OpEx (Monthly Running)</option>
+                  <option value="CapEx">CapEx (Tools & Assets)</option>
+                </select>
+                <select class="select-input" id="expenseCategoryFilter">
+                  <option value="ALL">All Categories</option>
+                  <option value="Shop Rent">Shop Rent</option>
+                  <option value="Payroll">Payroll / Salaries</option>
+                  <option value="Electricity Bill">Electricity (QESCO)</option>
+                  <option value="Shop Expense">Shop / Food / Tea</option>
+                  <option value="Hardware">Hardware / Tools</option>
+                  <option value="Security Deposit">Security Deposit</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Paid To</th>
+                    <th>Amount (PKR)</th>
+                    <th>Method</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. SAMAAN / INVENTORY ================= -->
+      <section id="tab-inventory" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Hardware, Fiber & Tools Inventory</span>
+            <button class="btn btn-primary btn-sm" id="addInventoryBtn">+ Add Stock Item</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item Name (Samaan)</th>
+                    <th>Unit</th>
+                    <th>Total Received</th>
+                    <th>Used / Deployed</th>
+                    <th>In Stock (Remaining)</th>
+                    <th>Total Cost (PKR)</th>
+                    <th>Remarks / Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. PACKAGES & MARGINS ================= -->
+      <section id="tab-packages" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Internet Packages & Margin Matrix</span>
+            <button class="btn btn-primary btn-sm" id="addPackageBtn">+ Add Package</button>
+          </div>
+          <div class="card-body">
+            <div class="filter-bar">
+              <input type="text" class="search-input" id="packageSearchInput" placeholder="🔍 Search package name...">
+              <select class="select-input" id="packageCompanyFilter">
+                <option value="ALL">All Companies</option>
+                <option value="Transworld">Transworld</option>
+                <option value="Ebone">Ebone</option>
+              </select>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Package Name</th>
+                    <th>Company</th>
+                    <th>Selling Price (PKR)</th>
+                    <th>Panel Cost (PKR)</th>
+                    <th>Profit Margin (PKR)</th>
+                    <th>Margin %</th>
+                  </tr>
+                </thead>
+                <tbody id="packagesTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. INVESTORS HISAB ================= -->
+      <section id="tab-investors" class="tab-pane">
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-header">
+            <span class="card-title">Investors Capital & Share Distribution</span>
+            <button class="btn btn-primary btn-sm" id="addInvestorBtn">+ Add Investor</button>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Investor Name</th>
+                    <th>Investment (PKR)</th>
+                    <th>Equity Share %</th>
+                    <th>Profit Paid (PKR)</th>
+                    <th>Payment Method</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="investorsTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profit Sharing Calculator -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🧮 Automatic Dividend / Profit Distribution Calculator</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:#64748b; margin-bottom:14px;">Jab franchise ka monthly net profit generate ho, yahan amount enter karein. Har investor ka hissa khud ba khud calculate ho jayega:</p>
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px;">
+              <label style="font-weight:bold; font-size:14px;">Total Monthly Net Profit to Distribute (PKR):</label>
+              <input type="number" id="profitCalcInput" class="form-control" style="max-width:200px;" value="100000">
+              <button class="btn btn-primary btn-sm" id="calcProfitBtn">Calculate Payouts</button>
+            </div>
+
+            <div id="profitDistributionResult">
+              <!-- Result table -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. BACKUP & SETTINGS ================= -->
+      <section id="tab-settings" class="tab-pane">
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header">
+            <span class="card-title">Franchise Profile Settings</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Franchise Name</label>
+                <input type="text" id="settingFranchiseName" class="form-control" value="FastLink ISP & FTTH Network">
+              </div>
+              <div class="form-group">
+                <label>Support / Billing Phone</label>
+                <input type="text" id="settingPhone" class="form-control" value="0321-3246541">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Office Address / Location</label>
+              <input type="text" id="settingAddress" class="form-control" value="Toghi Road, Near Alamdar Road, Quetta">
+            </div>
+            <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Data Backup & Recovery</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px; color:#64748b; margin-bottom:16px;">
+              Your entire data is stored safely on your browser and can be exported as a JSON file anytime to keep a backup on Google Drive or USB drive.
+            </p>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-success" id="exportBackupBtn">💾 Download Complete Backup (JSON)</button>
+              <label class="btn btn-outline" style="cursor:pointer;">
+                📂 Restore from Backup File
+                <input type="file" id="importBackupInput" accept=".json" style="display:none;">
+              </label>
+              <button class="btn btn-outline" style="color:#ef4444;" id="resetDataBtn">🔄 Reset to Initial Spreadsheet</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= MODAL: ADD / EDIT CLIENT ================= -->
+  <div class="modal-overlay" id="clientModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="clientModalTitle">Add New Client</h3>
+        <button class="modal-close" onclick="app.closeModal('clientModal')">&times;</button>
+      </div>
+      <form id="clientForm">
+        <div class="modal-body">
+          <input type="hidden" id="clientId">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Client Name *</label>
+              <input type="text" id="clientName" class="form-control" required placeholder="e.g. Asif Khan">
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="text" id="clientPhone" class="form-control" required placeholder="0300-1234567">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Complete Address / Location</label>
+            <input type="text" id="clientAddress" class="form-control" placeholder="Street, Plaza, Flat No, Quetta">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Provider</label>
+              <select id="clientProvider" class="form-control">
+                <option value="Transworld">Transworld</option>
+                <option value="Ebone">Ebone</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Package</label>
+              <select id="clientPackage" class="form-control">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Monthly Bill Price (PKR)</label>
+              <input type="number" id="clientPrice" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Oct Bill Status</label>
+              <select id="clientStatus" class="form-control">
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Office Line">Office Line</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Billing Due Day of Month</label>
+            <input type="number" id="clientDueDay" class="form-control" min="1" max="31" value="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="app.closeModal('clientModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Client</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD / EDIT EXPENSE ================= -->
+  <div class="modal-overlay" id="expenseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="expenseModalTitle">Add Expense (Kharcha)</h3>
+        <button class="modal-close" onclick="app.closeModal('expenseModal')">&times;</button>
+      </div>
+      <form id="expenseForm">
+        <div class="modal-body">
+          <input type="hidden" id="expenseId">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="expenseDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Expense Type</label>
+              <select id="expenseType" class="form-control">
+                <option value="OpEx">OpEx (Running Monthly)</option>
+                <option value="CapEx">CapEx (Asset / Tool / Advance)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category</label>
+              <select id="expenseCategory" class="form-control">
+                <option value="Shop Rent">Shop Rent</option>
+                <option value="Payroll">Payroll (Salaries)</option>
+                <option value="Electricity Bill">Electricity Bill (QESCO)</option>
+                <option value="Shop Expense">Shop Expense (Tea/Food)</option>
+                <option value="Hardware">Hardware / Adapters</option>
+                <option value="Equipment">Major Equipment</option>
+                <option value="Security Deposit">Security Deposit</option>
+                <option value="Misc">Misc</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount (PKR) *</label>
+              <input type="number" id="expenseAmount" class="form-control" required placeholder="5000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Paid To</label>
+              <input type="text" id="expensePaidTo" class="form-control" placeholder="Malik Dukan / Yasir / QESCO / Misc">
+            </div>
+            <div class="form-group">
+              <label>Payment Method</label>
+              <select id="expenseMethod" class="form-control">
+                <option value="Cash">Cash</option>
+                <option value="Online">Online Bank Transfer / EasyPaisa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description / Details</label>
+            <input type="text" id="expenseDesc" class="form-control" placeholder="e.g. October shop rent or 1 week tea">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="app.closeModal('expenseModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRINTABLE BILL / INVOICE ================= -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>Customer Monthly Bill</h3>
+        <button class="modal-close" onclick="app.closeModal('invoiceModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="invoicePrintArea">
+        <div class="invoice-box">
+          <div class="invoice-header">
+            <h2 id="invFranchiseName">FastLink ISP & FTTH Network</h2>
+            <p style="font-size:12px; color:#64748b;" id="invTagline">Toghi Road, Quetta | Helpline: 0321-3246541</p>
+            <h3 style="margin-top:10px; font-size:15px; color:#2563eb;">MONTHLY INTERNET INVOICE</h3>
+          </div>
+
+          <div class="invoice-details">
+            <div>
+              <p style="color:#64748b;">Client Name:</p>
+              <strong id="invClientName">Abdul Rehim</strong>
+            </div>
+            <div>
+              <p style="color:#64748b;">Phone Number:</p>
+              <strong id="invClientPhone">0315-8826442</strong>
+            </div>
+            <div>
+              <p style="color:#64748b;">Package Name:</p>
+              <strong id="invPackage">10Mb-Supreme (Transworld)</strong>
+            </div>
+            <div>
+              <p style="color:#64748b;">Billing Month:</p>
+              <strong>October 2026</strong>
+            </div>
+            <div style="grid-column: span 2;">
+              <p style="color:#64748b;">Address:</p>
+              <span id="invAddress" style="font-size:12px;">Alamdar Road, Quetta</span>
+            </div>
+          </div>
+
+          <div class="invoice-amount-box">
+            <p style="font-size:12px; color:#64748b; text-transform:uppercase;">Total Payable Amount</p>
+            <h1 id="invAmount">PKR 1,800</h1>
+            <p id="invStatusBadge" style="margin-top:6px; font-size:12px; font-weight:bold; color:#16a34a;">STATUS: PAID</p>
+          </div>
+
+          <p style="font-size:11px; text-align:center; color:#94a3b8; margin-top:14px;">
+            Thank you for choosing our fiber internet service! For billing queries contact our helpline.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="app.closeModal('invoiceModal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Print Invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
